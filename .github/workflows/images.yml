@@ -70,3 +70,10 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.name }}
           # only master writes the cache (see the comment on caches in ci.yml)
           cache-to: ${{ github.ref == 'refs/heads/master' && format('type=gha,mode=max,scope={0},compression=zstd', matrix.name) || '' }}
+      # Throwaway: print the magic bytes of the cache blobs in BuildKit's content store
+      # (gzip starts with 1f8b, zstd with 28b52ffd).
+      - name: Probe the compression of the cache blobs
+        if: matrix.name == 'smbdrop' || matrix.name == 'ca'
+        run: |
+          c=$(docker ps -q --filter name=buildx_buildkit_)
+          docker exec "$c" sh -c 'for f in /var/lib/buildkit/runc-overlayfs/content/blobs/sha256/*; do echo "$(head -c4 "$f" | od -An -tx1 | tr -d " ") $(stat -c %s "$f") ${f##*/}"; done' | sort -k2 -n | tail -15
