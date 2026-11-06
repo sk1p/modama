@@ -31,3 +31,4 @@ pub fn pinned_ca_client_builder(ca: reqwest::Certificate) -> reqwest::ClientBuil
     install_rustls_crypto_provider();
     reqwest::ClientBuilder::new().tls_certs_only([ca])
 }
+// zstd cache probe: throwaway change, do not merge
