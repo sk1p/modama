@@ -69,4 +69,4 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha,scope=${{ matrix.name }}
           # only master writes the cache (see the comment on caches in ci.yml)
-          cache-to: ${{ github.ref == 'refs/heads/master' && format('type=gha,mode=max,scope={0}', matrix.name) || '' }}
+          cache-to: ${{ github.ref == 'refs/heads/master' && format('type=gha,mode=max,scope={0},compression=zstd', matrix.name) || '' }}
